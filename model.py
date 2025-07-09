@@ -6,7 +6,7 @@ class MLP:
         self.W2 = np.random.randn(hidden_dim, output_dim) * np.sqrt(2/hidden_dim)
 
     def relu(self, x):
-        return max(0, x)
+        return np.maximum(0, x)
 
     def deriv_relu(self, x):
         x = np.nan_to_num(x)
@@ -15,11 +15,19 @@ class MLP:
     def sigmoid(self, x):
         return 1/(1+np.exp(-x))
 
+    def deriv_sigmoid(self, x):
+        return self.sigmoid(x) * (1 - self.sigmoid(x))
+
     def forward(self, X):
-        Z1 = X @ self.W1
-        self.A1 = self.relu(Z1)
+        self.X = X
+        self.Z1 = X @ self.W1
+        self.A1 = self.relu(self.Z1)
         Z2 = self.A1 @ self.W2
         return self.sigmoid(Z2)
 
     def backward(self, y, y_pred):
-        grad_W2 = self.A1.T * (y_pred - y)
+        delta = np.mean(y_pred - y)
+        grad_W2 = delta * self.A1
+        grad_W1 = (delta * self.W2).T * self.deriv_relu(self.Z1).T * self.X
+        self.W2 = self.W2 - 1^(-3) * grad_W2
+        self.W1 = self.W1 - 1^(-3) * grad_W1
