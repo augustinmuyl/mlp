@@ -12,6 +12,8 @@ The goal of this project is to build and train MLPs without using any deep learn
 
 ## ToDo
 
-- Bias
 - Loss graph
 - Predicted points plot
+- Modularity
+- More datasets ("make classifications")
+- Optimize hyper parameters (grid search)

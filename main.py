@@ -3,12 +3,12 @@ from sklearn.datasets import make_moons
 from sklearn.model_selection import train_test_split
 from model import MLP
 
-X, y = make_moons(n_samples=1000, noise=0.2, random_state=None)
+X, y = make_moons(n_samples=10000, noise=0.2, random_state=None)
 y = y.reshape(-1, 1)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-model = MLP(X.shape[1], 10, 1)
+model = MLP(X.shape[1], 500, 1)
 
 epoch = 100
 
