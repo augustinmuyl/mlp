@@ -10,3 +10,8 @@ The goal of this project is to build and train MLPs without using any deep learn
 
 - "Mathematical derivations of backpropagation"
 
+## ToDo
+
+- Bias
+- Loss graph
+- Predicted points plot
