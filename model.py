@@ -25,9 +25,9 @@ class MLP:
         Z2 = self.A1 @ self.W2
         return self.sigmoid(Z2)
 
-    def backward(self, y, y_pred):
-        delta = np.mean(y_pred - y)
-        grad_W2 = delta * self.A1
-        grad_W1 = (delta * self.W2).T * self.deriv_relu(self.Z1).T * self.X
-        self.W2 = self.W2 - 1^(-3) * grad_W2
-        self.W1 = self.W1 - 1^(-3) * grad_W1
+    def backward(self, y, y_pred, lr=1e-3):
+        delta = (y_pred - y)
+        grad_W2 = np.dot(delta.T, self.A1)
+        grad_W1 = (np.dot(delta, self.W2.T) * self.deriv_relu(self.Z1)).T @ self.X
+        self.W2 = self.W2 - lr * grad_W2.T
+        self.W1 = self.W1 - lr * grad_W1.T
