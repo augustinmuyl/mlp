@@ -63,7 +63,7 @@ print(
     f"Best Loss: {best_test_loss: .6f}\nAccuracy at best Loss: {best_loss_acc: .2%}\nBest Accuracy: {best_acc: .2%}"
 )
 
-plot_loss(training_losses, test_losses)
-plot_loss_terminal(training_losses, test_losses)
-plot_predictions(X_test, y_pred)
-plot_predictions_terminal(X_test, y_pred)
+# plot_loss(training_losses, test_losses)
+# plot_loss_terminal(training_losses, test_losses)
+# plot_predictions(X_test, y_pred)
+# plot_predictions_terminal(X_test, y_pred)
