@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.datasets import make_moons
 from sklearn.model_selection import train_test_split
 from model import MLP
-from visualization import plot_loss
+from visualization import plot_loss, plot_loss_terminal, plot_predictions, plot_predictions_terminal
 
 X, y = make_moons(n_samples=10000, noise=0.2, random_state=None)
 X = np.asarray(X)
@@ -57,9 +57,13 @@ for i in range(epoch):
         print("\nTESTING:\n")
         print(loss)
         print(acc)
+y_pred = model.forward(X_test)
 
 print(
     f"Best Loss: {best_test_loss: .6f}\nAccuracy at best Loss: {best_loss_acc: .2%}\nBest Accuracy: {best_acc: .2%}"
 )
 
 plot_loss(training_losses, test_losses)
+plot_loss_terminal(training_losses, test_losses)
+plot_predictions(X_test, y_pred)
+plot_predictions_terminal(X_test, y_pred)

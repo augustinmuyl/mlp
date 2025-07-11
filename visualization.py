@@ -1,4 +1,5 @@
 import seaborn as sns
+import plotext as plterm
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -17,3 +18,45 @@ def plot_loss(training_losses, test_losses):
     plt.legend()
     plt.tight_layout()
     plt.show()
+
+
+def plot_loss_terminal(training_losses, test_losses):
+    epochs = list(range(len(training_losses)))
+    plterm.clear_figure()
+    plterm.plot(epochs, training_losses, label="Train Loss")
+    plterm.plot(epochs, test_losses, label="Test Loss")
+    plterm.title("Loss over Epochs")
+    plterm.xlabel("Epoch")
+    plterm.ylabel("Loss")
+    plterm.show()
+
+
+def plot_predictions(X, y_pred):
+    y_class = np.rint(y_pred).flatten()
+
+    plt.figure(figsize=(6, 6))
+    plt.scatter(X[:, 0], X[:, 1], c=y_class, cmap="coolwarm", edgecolors="k")
+    plt.title("Predicted Class per Input Point")
+    plt.xlabel("Feature 1")
+    plt.ylabel("Feature 2")
+    plt.show()
+
+
+def plot_predictions_terminal(X, y_pred):
+    y_class = np.rint(y_pred).flatten()
+
+    # Split points by predicted class
+    x_class0 = X[y_class == 0][:, 0]
+    y_class0 = X[y_class == 0][:, 1]
+
+    x_class1 = X[y_class == 1][:, 0]
+    y_class1 = X[y_class == 1][:, 1]
+
+    plterm.clear_figure()
+    plterm.scatter(x_class0, y_class0, marker="x", label="Class 0")
+    plterm.scatter(x_class1, y_class1, marker="o", label="Class 1")
+
+    plterm.title("Predicted Class per Input Point")
+    plterm.xlabel("Feature 1")
+    plterm.ylabel("Feature 2")
+    plterm.show()
