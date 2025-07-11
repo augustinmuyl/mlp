@@ -8,12 +8,39 @@ The goal of this project is to build and train MLPs without using any deep learn
 
 ## Table of Contents
 
-- "Mathematical derivations of backpropagation"
+- [Overview](#overview)
+- [Getting Started](#getting-started)
+- Backpropagation Derivation
+
+## Getting Started
+
+To run the model on your own machine:
+
+### 1. Clone the Repo
+
+```bash
+git clone https://github.com/augustinmuyl/mlp.git
+cd mlp
+```
+
+### 2. Setup Python
+
+```bash
+python3 -m venv .venv  # create venv
+source .venv/bin/activate  # activate venv
+pip install -r requirements.txt  # install dependencies
+```
+
+### 3. Run the Model
+
+```bash
+python main.py
+```
 
 ## ToDo
 
-- Loss graph
-- Predicted points plot
-- Modularity
-- More datasets ("make classifications")
-- Optimize hyper parameters (grid search)
+- [] Loss graph
+- [] Predicted points plot
+- [] Modularity
+- [] More datasets ("make classifications")
+- [] Optimize hyper parameters (grid search)
