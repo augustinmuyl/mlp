@@ -35,9 +35,10 @@ python main.py
 
 ## ToDo
 
-- [x] Loss graph
-- [x] Predicted points plot
-- [ ] Modularity
+- [x] ~~Loss graph~~
+- [x] ~~Predicted points plot~~
+- [x] ~~Modularity~~
+- [ ] Decision Boundary plot
 - [ ] Optimize hyper parameters (grid search)
 - [ ] CLI Tool
 - [ ] More datasets (e.g. `make_classifications`)

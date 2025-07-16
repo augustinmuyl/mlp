@@ -2,11 +2,13 @@ import numpy as np
 
 
 class MLP:
-    def __init__(self, input_dim, hidden_dim, output_dim):
-        self.W1 = np.random.randn(input_dim, hidden_dim) * np.sqrt(2 / input_dim)
-        self.W2 = np.random.randn(hidden_dim, output_dim) * np.sqrt(2 / hidden_dim)
-        self.b1 = np.zeros((1, hidden_dim))
-        self.b2 = np.zeros((1, output_dim))
+    def __init__(self, input_dim: int, hidden_dims: list, output_dim: int):
+        self.W = []
+        self.B = []
+        dims = [input_dim] + hidden_dims + [output_dim]
+        for i in range(len(dims) - 1):
+            self.W.append(np.random.randn(dims[i], dims[i + 1]) * np.sqrt(2 / dims[i]))
+            self.B.append(np.zeros((1, dims[i + 1])))
 
     def relu(self, x):
         return np.maximum(0, x)
@@ -22,19 +24,31 @@ class MLP:
         return self.sigmoid(x) * (1 - self.sigmoid(x))
 
     def forward(self, X):
-        self.X = X
-        self.Z1 = X @ self.W1 + self.b1
-        self.A1 = self.relu(self.Z1)
-        Z2 = self.A1 @ self.W2 + self.b2
-        return self.sigmoid(Z2)
+        a = X
+        self.Z = []
+        self.A = [a]
+        for i, (w, b) in enumerate(zip(self.W, self.B)):
+            z = a @ w + b
+            self.Z.append(z)
+            if i == len(self.W) - 1:
+                a = self.sigmoid(z)
+            else:
+                a = self.relu(z)
+            self.A.append(a)
+        return a
 
     def backward(self, y, y_pred, lr=1e-3):
         delta = y_pred - y
-        grad_W2 = np.dot(delta.T, self.A1)
-        grad_W1 = (np.dot(delta, self.W2.T) * self.deriv_relu(self.Z1)).T @ self.X
-        grad_b2 = np.sum(delta, 0, keepdims=True)
-        grad_b1 = np.sum(np.dot(delta, self.W2.T) * self.deriv_relu(self.Z1), 0, keepdims=True)
-        self.W2 -= lr * grad_W2.T
-        self.W1 -= lr * grad_W1.T
-        self.b2 -= lr * grad_b2
-        self.b1 -= lr * grad_b1
+        grad_W = []
+        grad_B = []
+
+        for i in reversed(range(len(self.W))):
+            grad_W.append(np.dot(delta.T, self.A[i]))
+            grad_B.append(np.sum(delta, 0, keepdims=True))
+
+            if i != 0:
+                delta = np.dot(delta, self.W[i].T) * self.deriv_relu(self.Z[i - 1])
+
+        for i, (w, b) in enumerate(reversed(list(zip(self.W, self.B)))):
+            w -= lr * grad_W[i].T
+            b -= lr * grad_B[i]
