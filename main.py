@@ -12,7 +12,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 y_train = np.asarray(y_train)
 y_test = np.asarray(y_test)
 
-model = MLP(X.shape[1], 80, 1)
+model = MLP(X.shape[1], [16, 32, 64], 1)
 
 epoch = 10000
 best_test_loss = float("inf")
@@ -24,6 +24,10 @@ count = 0
 training_losses = []
 test_losses = []
 
+plot_preds = []
+y_plot_preds = []
+
+
 for i in range(epoch):
     # training
 
@@ -31,7 +35,7 @@ for i in range(epoch):
     y_pred = np.clip(y_pred, 1e-9, 1 - 1e-9)
     loss = np.mean(-(y_train * np.log(y_pred) + (1 - y_train) * np.log(1 - y_pred)))
     training_losses.append(loss)
-    model.backward(y_train, y_pred)
+    model.backward(y_train, y_pred, 1e-5)
 
     # testing
 
@@ -63,7 +67,17 @@ print(
     f"Best Loss: {best_test_loss: .6f}\nAccuracy at best Loss: {best_loss_acc: .2%}\nBest Accuracy: {best_acc: .2%}"
 )
 
+# Decision Boundary plot
+
+for i in np.linspace(-2, 3, 1000):
+    for j in np.linspace(-2, 2, 1000):
+        pred = model.forward(np.array([i, j]))
+        plot_preds.append([i, j])
+        y_plot_preds.append(np.rint(pred))
+
+
 # plot_loss(training_losses, test_losses)
 # plot_loss_terminal(training_losses, test_losses)
 # plot_predictions(X_test, y_pred)
 # plot_predictions_terminal(X_test, y_pred)
+plot_predictions_terminal(np.array(plot_preds), np.array(y_plot_preds))

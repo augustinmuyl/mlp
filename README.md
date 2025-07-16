@@ -38,7 +38,7 @@ python main.py
 - [x] ~~Loss graph~~
 - [x] ~~Predicted points plot~~
 - [x] ~~Modularity~~
-- [ ] Decision Boundary plot
+- [x] ~~Decision Boundary plot~~
 - [ ] Optimize hyper parameters (grid search)
 - [ ] CLI Tool
 - [ ] More datasets (e.g. `make_classifications`)
