@@ -18,7 +18,7 @@ class MLP:
         return (x > 0).astype(float)
 
     def sigmoid(self, x):
-        return 1 / (1 + np.exp(-x + 1e-9))
+        return 1 / (1 + np.exp(np.clip(-x, -709, 709)))
 
     def deriv_sigmoid(self, x):
         return self.sigmoid(x) * (1 - self.sigmoid(x))

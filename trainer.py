@@ -52,7 +52,7 @@ def train_model(hidden_layers, lr, epochs, use_terminal_plot, patience=100):
             if count == patience:
                 break
 
-        if use_terminal_plot:
-            plot_loss_terminal(training_losses, test_losses)
+    if use_terminal_plot:
+        plot_loss_terminal(training_losses, test_losses)
 
-        return best_test_loss, best_loss_acc
+    return best_test_loss, best_loss_acc
