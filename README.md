@@ -37,11 +37,11 @@ python cli.py
 
 You can train a model using your preferred parameters for the following:
 
-- The number of hidden layers, and neurons per layer
+- The number of hidden layers and neurons per layer
 - The learning rate
 - The number of epochs
 
-After training, the CLI will automatically save model and training info to `data/last_run/`.
+After training, the CLI will automatically save model and training info to `data/last_run/`
 
 You can then access the following plots:
 
@@ -49,7 +49,7 @@ You can then access the following plots:
 - Predicted points
 - Decision boundary (*coming soon*)
 
-> All plots have both terminal and GUI versions
+> Note: all plots have both terminal and GUI versions
 
 ## To-Do
 
@@ -58,5 +58,5 @@ You can then access the following plots:
 - [x] ~~Modularity~~
 - [x] ~~Decision Boundary plot~~
 - [ ] Optimize hyper parameters (grid search)
-- [x] CLI Tool
+- [x] ~~CLI Tool~~
 - [ ] More datasets (e.g. `make_classifications`)
