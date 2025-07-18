@@ -7,7 +7,7 @@ from visualization import plot_loss_terminal, plot_predictions, plot_predictions
 from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn
 
 
-def train_model(hidden_layers, lr, epochs, patience=100):
+def train_model(hidden_layers, lr, epochs, patience=float("inf")):
     X, y = make_moons(n_samples=10000, noise=0.2, random_state=None)
     X = np.asarray(X)
     y = np.asarray(y).reshape(-1, 1)
