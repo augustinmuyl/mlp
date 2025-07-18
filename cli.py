@@ -138,4 +138,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        console.print("\n[red]✘ Exiting due to keyboard interrupt.[/red]")
