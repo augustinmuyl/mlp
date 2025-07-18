@@ -2,7 +2,7 @@ import numpy as np
 from model import MLP
 from sklearn.datasets import make_moons
 from sklearn.model_selection import train_test_split
-from visualization import plot_loss_terminal, plot_predictions_terminal
+from visualization import plot_loss_terminal, plot_predictions, plot_predictions_terminal
 
 
 def train_model(hidden_layers, lr, epochs, use_terminal_plot, patience=100):
@@ -52,7 +52,11 @@ def train_model(hidden_layers, lr, epochs, use_terminal_plot, patience=100):
             if count == patience:
                 break
 
+    y_pred_test = model.forward(X_test)
+
     if use_terminal_plot:
-        plot_loss_terminal(training_losses, test_losses)
+        plot_predictions_terminal(X_test, y_pred_test)
+    else:
+        plot_predictions(X_test, y_pred_test)
 
     return best_test_loss, best_loss_acc

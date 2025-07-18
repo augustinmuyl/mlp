@@ -35,9 +35,11 @@ def prompt_training_config():
     # Learning rate
     lr = questionary.text(
         "Learning rate:",
-        default="0.001",
+        default="0.00001",
         validate=lambda val: val.replace(".", "", 1).isdigit() or "Please enter a valid number",
     ).ask()
+    if float(lr) >= 0.01:
+        console.print("[yellow]⚠️ Warning: High learning rate may cause instability.[/yellow]")
     if lr is None:
         console.print("[red]Cancelled. Returning to main menu...[/red]")
         return None, None, None, None
