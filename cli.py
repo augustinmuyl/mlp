@@ -74,6 +74,7 @@ def main_menu():
         ).ask()
 
         if choice == "Exit":
+            os.system("clear")
             console.print("[bold red]Goodbye![/bold red]")
             break
         elif choice == "Train model":

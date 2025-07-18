@@ -1,3 +1,4 @@
+import os
 import seaborn as sns
 import plotext as plterm
 import matplotlib.pyplot as plt
@@ -21,8 +22,11 @@ def plot_loss(training_losses, test_losses):
 
 
 def plot_loss_terminal(training_losses, test_losses):
-    epochs = list(range(len(training_losses)))
+    os.system("clear")
     plterm.clear_figure()
+    plterm.plot_size(70, 20)
+
+    epochs = list(range(len(training_losses)))
     plterm.plot(epochs, training_losses, label="Train Loss")
     plterm.plot(epochs, test_losses, label="Test Loss")
     plterm.title("Loss over Epochs")
@@ -43,6 +47,10 @@ def plot_predictions(X, y_pred):
 
 
 def plot_predictions_terminal(X, y_pred):
+    os.system("clear")
+    plterm.clear_figure()
+    plterm.plot_size(80, 25)
+
     y_class = np.rint(y_pred).flatten()
 
     # Split points by predicted class
@@ -52,7 +60,6 @@ def plot_predictions_terminal(X, y_pred):
     x_class1 = X[y_class == 1][:, 0]
     y_class1 = X[y_class == 1][:, 1]
 
-    plterm.clear_figure()
     plterm.scatter(x_class0, y_class0, marker="x", label="Class 0")
     plterm.scatter(x_class1, y_class1, marker="o", label="Class 1")
 
