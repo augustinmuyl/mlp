@@ -60,3 +60,23 @@ def plot_predictions_terminal(X, y_pred):
     plterm.xlabel("Feature 1")
     plterm.ylabel("Feature 2")
     plterm.show()
+
+
+def plot_last_loss():
+    data = np.load("data/last_run/loss.npz")
+    plot_loss(data["training"], data["test"])
+
+
+def plot_last_loss_terminal():
+    data = np.load("data/last_run/loss.npz")
+    plot_loss_terminal(data["training"], data["test"])
+
+
+def plot_last_predictions():
+    data = np.load("data/last_run/predictions.npz")
+    plot_predictions(data["X"], data["y_pred"])
+
+
+def plot_last_predictions_terminal():
+    data = np.load("data/last_run/predictions.npz")
+    plot_predictions_terminal(data["X"], data["y_pred"])

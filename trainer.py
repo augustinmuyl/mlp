@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from model import MLP
 from sklearn.datasets import make_moons
@@ -6,7 +7,7 @@ from visualization import plot_loss_terminal, plot_predictions, plot_predictions
 from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn
 
 
-def train_model(hidden_layers, lr, epochs, use_terminal_plot, patience=100):
+def train_model(hidden_layers, lr, epochs, patience=100):
     X, y = make_moons(n_samples=10000, noise=0.2, random_state=None)
     X = np.asarray(X)
     y = np.asarray(y).reshape(-1, 1)
@@ -70,10 +71,10 @@ def train_model(hidden_layers, lr, epochs, use_terminal_plot, patience=100):
 
     y_pred_test = model.forward(X_test)
 
-    if use_terminal_plot:
-        plot_predictions_terminal(X_test, y_pred_test)
-    else:
-        # plot_predictions(X_test, y_pred_test)
-        pass
+    output_dir = "data/last_run"
+    os.makedirs(output_dir, exist_ok=True)
+
+    np.savez(os.path.join(output_dir, "loss.npz"), training=training_losses, test=test_losses)
+    np.savez(os.path.join(output_dir, "predictions.npz"), X=X_test, y_pred=y_pred_test)
 
     return best_test_loss, best_loss_acc
