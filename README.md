@@ -30,7 +30,7 @@ pip install -r requirements.txt  # install dependencies
 ### 3. Run the Model
 
 ```bash
-python main.py
+python cli.py
 ```
 
 ## ToDo
