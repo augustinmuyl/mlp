@@ -19,7 +19,7 @@ def clear_terminal():
 
 
 def show_header():
-    ascii_banner = figlet_format("MLP Trainer", font="small")
+    ascii_banner = figlet_format("MLP Trainer", font="ansi_shadow", width=90)
     console.print(ascii_banner, style="bold green")
 
     description = (
