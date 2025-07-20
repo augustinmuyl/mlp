@@ -58,5 +58,7 @@ You can then access the following plots:
 - [x] ~~Modularity~~
 - [x] ~~Decision Boundary plot~~
 - [x] ~~CLI Tool~~
+- [ ] Add patience/dynamic epoch stop option
+- [ ] Save and load models
 - [ ] Optimize hyper parameters (grid search)
 - [ ] More datasets (e.g. `make_classifications`)
