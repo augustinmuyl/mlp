@@ -3,6 +3,9 @@ import numpy as np
 
 class MLP:
     def __init__(self, input_dim: int, hidden_dims: list, output_dim: int):
+        self.input_dim = input_dim
+        self.hidden_dims = hidden_dims
+        self.output_dim = output_dim
         self.W = []
         self.B = []
         dims = [input_dim] + hidden_dims + [output_dim]
@@ -52,3 +55,25 @@ class MLP:
         for i, (w, b) in enumerate(reversed(list(zip(self.W, self.B)))):
             w -= lr * grad_W[i].T
             b -= lr * grad_B[i]
+
+    def save(self, path: str):
+        np.savez(
+            path,
+            W=np.array(self.W, dtype=object),
+            B=np.array(self.B, dtype=object),
+            input_dim=self.input_dim,
+            hidden_dims=np.array(self.hidden_dims),
+            output_dim=self.output_dim,
+        )
+
+    @classmethod
+    def load(cls, path: str):
+        data = np.load(path, allow_pickle=True)
+        model = cls(
+            input_dim=data["input_dim"],
+            hidden_dims=data["hidden_dims"],
+            output_dim=data["output_dim"],
+        )
+        model.W = data["W"]
+        model.B = data["B"]
+        return model
