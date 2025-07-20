@@ -10,7 +10,7 @@ The goal of this project is to **build and train MLPs without using any deep lea
 
 ## Getting Started
 
-Follow these steps to set up and run the project on your local machine:
+Follow these steps to set up the project on your local machine:
 
 ### 1. Clone the Repo
 
@@ -47,7 +47,7 @@ You can then access the following plots:
 
 - Training loss vs Test loss
 - Predicted points
-- Decision boundary (*coming soon*)
+- Decision boundary
 
 > Note: all plots have both terminal and GUI versions
 
@@ -57,6 +57,6 @@ You can then access the following plots:
 - [x] ~~Predicted points plot~~
 - [x] ~~Modularity~~
 - [x] ~~Decision Boundary plot~~
-- [ ] Optimize hyper parameters (grid search)
 - [x] ~~CLI Tool~~
+- [ ] Optimize hyper parameters (grid search)
 - [ ] More datasets (e.g. `make_classifications`)
