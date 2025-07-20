@@ -5,6 +5,8 @@ from rich.panel import Panel
 import questionary
 from trainer import train_model
 from visualization import (
+    plot_last_decision_boundary,
+    plot_last_decision_boundary_terminal,
     plot_last_loss,
     plot_last_loss_terminal,
     plot_last_predictions,
@@ -93,6 +95,7 @@ def main_menu():
                 "Train model",
                 "Show loss curves",
                 "Show predictions",
+                "Show decision boundary",
                 "Exit",
             ],
         ).ask()
@@ -119,6 +122,10 @@ def main_menu():
             prompt_plotting_config(plot_last_loss_terminal, plot_last_loss)
         elif choice == "Show predictions":
             prompt_plotting_config(plot_last_predictions_terminal, plot_last_predictions)
+        elif choice == "Show decision boundary":
+            prompt_plotting_config(
+                plot_last_decision_boundary_terminal, plot_last_decision_boundary
+            )
 
 
 def main():

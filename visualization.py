@@ -35,11 +35,19 @@ def plot_loss_terminal(training_losses, test_losses):
     plterm.show()
 
 
-def plot_predictions(X, y_pred):
+def plot_predictions(X, y_pred, is_grid=False):
     y_class = np.rint(y_pred).flatten()
 
     plt.figure(figsize=(6, 6))
-    plt.scatter(X[:, 0], X[:, 1], c=y_class, cmap="coolwarm", edgecolors="k")
+
+    if is_grid:
+        Z = y_class.reshape(1000, 1000)
+        x = np.linspace(-2, 3, 1000)
+        y = np.linspace(-2, 2, 1000)
+        plt.contourf(x, y, Z, levels=[-1, 0.5, 1], cmap="coolwarm", alpha=0.6)
+    else:
+        plt.scatter(X[:, 0], X[:, 1], c=y_class, cmap="coolwarm", edgecolors="k")
+
     plt.title("Predicted Class per Input Point")
     plt.xlabel("Feature 1")
     plt.ylabel("Feature 2")
@@ -87,3 +95,13 @@ def plot_last_predictions():
 def plot_last_predictions_terminal():
     data = np.load("data/last_run/predictions.npz")
     plot_predictions_terminal(data["X"], data["y_pred"])
+
+
+def plot_last_decision_boundary():
+    data = np.load("data/last_run/boundary.npz")
+    plot_predictions(data["grid"], data["y_class"], is_grid=True)
+
+
+def plot_last_decision_boundary_terminal():
+    data = np.load("data/last_run/boundary.npz")
+    plot_predictions_terminal(data["grid"], data["y_class"])

@@ -77,4 +77,16 @@ def train_model(hidden_layers, lr, epochs, patience=float("inf")):
     np.savez(os.path.join(output_dir, "loss.npz"), training=training_losses, test=test_losses)
     np.savez(os.path.join(output_dir, "predictions.npz"), X=X_test, y_pred=y_pred_test)
 
+    # Decision boundary calculation
+
+    x = np.linspace(-2, 3, 1000)
+    y = np.linspace(-2, 2, 1000)
+    xx, yy = np.meshgrid(x, y)
+    grid = np.c_[xx.ravel(), yy.ravel()]
+
+    y_pred = model.forward(grid)
+    y_class = np.rint(y_pred).flatten()
+
+    np.savez(os.path.join(output_dir, "boundary.npz"), grid=grid, y_class=y_class)
+
     return best_test_loss, best_loss_acc
