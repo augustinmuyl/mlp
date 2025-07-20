@@ -66,11 +66,35 @@ def prompt_training_config():
     return hidden_layers, lr, epochs
 
 
+def prompt_plotting_config(term_plot, gui_plot):
+    use_terminal_plot = questionary.confirm(
+        "Use terminal plots instead of graphical ones?", default=True
+    ).ask()
+    if use_terminal_plot is None:
+        console.print("[red]Cancelled. Returning to main menu...[/red]")
+        return None
+    elif use_terminal_plot:
+        try:
+            return term_plot()
+        except FileNotFoundError:
+            console.print("[red]✘ No data found. Please train a model first.[/red]")
+    else:
+        try:
+            return gui_plot()
+        except FileNotFoundError:
+            console.print("[red]✘ No data found. Please train a model first.[/red]")
+
+
 def main_menu():
     while True:
         choice = questionary.select(
             "Choose an option:",
-            choices=["Train model", "Show loss curves", "Show predictions", "Exit"],
+            choices=[
+                "Train model",
+                "Show loss curves",
+                "Show predictions",
+                "Exit",
+            ],
         ).ask()
 
         if choice == "Exit":
@@ -92,43 +116,9 @@ def main_menu():
             console.print(f"[green]Best Loss:[/green] {best_loss:.6f}")
             console.print(f"[green]Accuracy:[/green] {best_loss_acc:.2%}")
         elif choice == "Show loss curves":
-            use_terminal_plot = questionary.confirm(
-                "Use terminal plots instead of graphical ones?", default=True
-            ).ask()
-            if use_terminal_plot is None:
-                console.print("[red]Cancelled. Returning to main menu...[/red]")
-                continue
-            elif use_terminal_plot:
-                try:
-                    plot_last_loss_terminal()
-                except FileNotFoundError:
-                    console.print(
-                        "[red]✘ No previous training run found. Please train a model first.[/red]"
-                    )
-            else:
-                try:
-                    plot_last_loss()
-                except FileNotFoundError:
-                    console.print(
-                        "[red]✘ No previous training run found. Please train a model first.[/red]"
-                    )
+            prompt_plotting_config(plot_last_loss_terminal, plot_last_loss)
         elif choice == "Show predictions":
-            use_terminal_plot = questionary.confirm(
-                "Use terminal plots instead of graphical ones?", default=True
-            ).ask()
-            if use_terminal_plot is None:
-                console.print("[red]Cancelled. Returning to main menu...[/red]")
-                continue
-            elif use_terminal_plot:
-                try:
-                    plot_last_predictions_terminal()
-                except FileNotFoundError:
-                    console.print("[red]✘ No predictions found. Please train a model first.[/red]")
-            else:
-                try:
-                    plot_last_predictions()
-                except FileNotFoundError:
-                    console.print("[red]✘ No predictions found. Please train a model first.[/red]")
+            prompt_plotting_config(plot_last_predictions_terminal, plot_last_predictions)
 
 
 def main():
