@@ -4,10 +4,17 @@ from model import MLP
 from sklearn.datasets import make_moons
 from sklearn.model_selection import train_test_split
 from visualization import plot_loss_terminal, plot_predictions, plot_predictions_terminal
-from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn
+from rich.progress import (
+    Progress,
+    BarColumn,
+    SpinnerColumn,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
 
 
-def train_model(hidden_layers, lr, epochs, patience):
+def train_model(hidden_layers, lr, epochs, patience, dynamic_epoch):
     X, y = make_moons(n_samples=10000, noise=0.2, random_state=None)
     X = np.asarray(X)
     y = np.asarray(y).reshape(-1, 1)
@@ -25,17 +32,35 @@ def train_model(hidden_layers, lr, epochs, patience):
     training_losses = []
     test_losses = []
 
-    with Progress(
-        TextColumn("[bold green]{task.description}"),
-        BarColumn(),
-        TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
-        TextColumn(" • test_loss={task.fields[loss]:.4f}"),
-        TextColumn(" • test_acc={task.fields[acc]:.2%}"),
-        TimeRemainingColumn(),
-        transient=True,
-    ) as progress:
+    if dynamic_epoch:
+        progress_columns = [
+            SpinnerColumn(),
+            TextColumn("[bold green]Epoch {task.completed}[/bold green]"),
+            TextColumn("• Test Loss: {task.fields[loss]:.4f}"),
+            TextColumn("• Test Acc: {task.fields[acc]:.2%}"),
+            TextColumn("• Patience Left: {task.fields[patience_left]}"),
+            TimeElapsedColumn(),
+        ]
+        total = None
+    else:
+        progress_columns = [
+            SpinnerColumn(),
+            TextColumn("[bold green]{task.description}"),
+            BarColumn(),
+            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+            TextColumn(" • Test Loss: {task.fields[loss]:.4f}"),
+            TextColumn(" • Test Acc: {task.fields[acc]:.2%}"),
+            TimeRemainingColumn(),
+        ]
+        total = epochs
+
+    with Progress(*progress_columns, transient=True, refresh_per_second=20) as progress:
         task = progress.add_task(
-            "[green]Training[/green]", total=epochs, loss=float("nan"), acc=float("nan")
+            "[green]Training[/green]",
+            total=total,
+            loss=float("nan"),
+            acc=float("nan"),
+            patience_left=patience,
         )
 
         for i in range(epochs):
@@ -67,7 +92,10 @@ def train_model(hidden_layers, lr, epochs, patience):
                 if count == patience:
                     break
 
-            progress.update(task, advance=1, loss=loss_test, acc=acc)
+            update_fields = {"loss": loss_test, "acc": acc}
+            if dynamic_epoch:
+                update_fields["patience_left"] = patience - count
+            progress.update(task, advance=1, **update_fields)
 
     y_pred_test = model.forward(X_test)
 

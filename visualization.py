@@ -24,6 +24,8 @@ def plot_loss(training_losses, test_losses):
 def plot_loss_terminal(training_losses, test_losses):
     plterm.clear_figure()
     plterm.plot_size(70, 20)
+    plterm.xfrequency(100)
+    plterm.yfrequency(80)
 
     epochs = list(range(len(training_losses)))
     plterm.plot(epochs, training_losses, label="Train Loss")

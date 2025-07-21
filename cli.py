@@ -53,7 +53,7 @@ def clear_and_show_header():
 
 def prompt_training_config():
     # Hidden layer
-    layer_input = questionary.text("Hidden layers:", default="16, 32, 64").ask()
+    layer_input = questionary.text("Hidden layers:", default="64, 32, 16").ask()
     if layer_input is None:
         console.print("[red]Cancelled. Returning to main menu...[/red]")
         return None
@@ -164,7 +164,9 @@ def main_menu():
 
             clear_and_show_header()
             console.print(f"[white]-> Starting training...[/white]")
-            best_loss, best_loss_acc, epoch = train_model(hidden_layers, lr, epochs, patience)
+            best_loss, best_loss_acc, epoch = train_model(
+                hidden_layers, lr, epochs, patience, dynamic_epochs
+            )
 
             console.print("[bold green]Training complete![/bold green]")
 
