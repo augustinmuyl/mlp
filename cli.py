@@ -92,19 +92,19 @@ def main_menu():
         choice = questionary.select(
             "Choose an option:",
             choices=[
-                "Train model",
-                "Show loss curves",
-                "Show predictions",
-                "Show decision boundary",
-                "Exit",
+                "🧠 Train model",
+                "📉 Show loss curves",
+                "🔍 Show predictions",
+                "🌈 Show decision boundary",
+                "❌ Exit",
             ],
         ).ask()
 
-        if choice == "Exit":
+        if choice == "❌ Exit":
             os.system("clear")
             console.print("[bold red]Goodbye![/bold red]")
             break
-        elif choice == "Train model":
+        elif choice == "🧠 Train model":
             console.print("[bold yellow]-> Training configuration[/bold yellow]")
 
             config = prompt_training_config()
@@ -118,11 +118,11 @@ def main_menu():
             console.print("\n[bold green]Training complete![/bold green]")
             console.print(f"[green]Best Loss:[/green] {best_loss:.6f}")
             console.print(f"[green]Accuracy:[/green] {best_loss_acc:.2%}")
-        elif choice == "Show loss curves":
+        elif choice == "📉 Show loss curves":
             prompt_plotting_config(plot_last_loss_terminal, plot_last_loss)
-        elif choice == "Show predictions":
+        elif choice == "🔍 Show predictions":
             prompt_plotting_config(plot_last_predictions_terminal, plot_last_predictions)
-        elif choice == "Show decision boundary":
+        elif choice == "🌈 Show decision boundary":
             prompt_plotting_config(
                 plot_last_decision_boundary_terminal, plot_last_decision_boundary
             )
