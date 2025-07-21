@@ -22,11 +22,11 @@ def clear_terminal():
 
 def show_header():
     ascii_banner = figlet_format("MLP Trainer", font="ansi_shadow", width=90)
-    console.print(ascii_banner, style="bold green")
+    console.print(ascii_banner, style="bold #E1C48F")
 
     description = (
         "[bold white]Welcome to your CLI for training and visualizing your custom MLP model.[/bold white]\n"
-        "[green]Use the menu to train, evaluate, and plot predictions from your network.[/green]"
+        "[#E1C48F]Use the menu to train, evaluate, and plot predictions from your network.[/#E1C48F]"
     )
 
     console.print(Panel(description, expand=False, border_style="blue"))
