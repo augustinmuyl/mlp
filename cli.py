@@ -24,6 +24,11 @@ TrainingConfig = namedtuple(
 )
 
 
+def press_any_key_rich():
+    console.print("\n[bold cyan]Press [Enter] to continue...[/bold cyan]", end="")
+    input()
+
+
 def clear_terminal():
     os.system("cls" if os.name == "nt" else "clear")
 
@@ -140,6 +145,7 @@ def main_menu():
             os.system("clear")
             console.print("[bold red]Goodbye![/bold red]")
             break
+
         elif choice == "🧠 Train model":
             console.print("[bold yellow]-> Training configuration[/bold yellow]")
 
@@ -148,10 +154,11 @@ def main_menu():
                 continue
             hidden_layers, lr, epochs, patience, dynamic_epochs = config
 
+            os.system("clear")
             console.print(f"[white]-> Starting training...[/white]")
             best_loss, best_loss_acc, epoch = train_model(hidden_layers, lr, epochs, patience)
 
-            console.print("\n[bold green]Training complete![/bold green]")
+            console.print("[bold green]Training complete![/bold green]")
             if dynamic_epochs:
                 console.print(f"[bold green]Early stopping at epoch {epoch}")
             console.print(f"[green]Best Loss:[/green] {best_loss:.6f}")
@@ -164,6 +171,7 @@ def main_menu():
             prompt_plotting_config(
                 plot_last_decision_boundary_terminal, plot_last_decision_boundary
             )
+        press_any_key_rich()
 
 
 def main():
