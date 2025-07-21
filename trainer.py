@@ -7,7 +7,7 @@ from visualization import plot_loss_terminal, plot_predictions, plot_predictions
 from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn
 
 
-def train_model(hidden_layers, lr, epochs, patience=float("inf")):
+def train_model(hidden_layers, lr, epochs, patience):
     X, y = make_moons(n_samples=10000, noise=0.2, random_state=None)
     X = np.asarray(X)
     y = np.asarray(y).reshape(-1, 1)
@@ -29,8 +29,8 @@ def train_model(hidden_layers, lr, epochs, patience=float("inf")):
         TextColumn("[bold green]{task.description}"),
         BarColumn(),
         TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
-        TextColumn(" • loss={task.fields[loss]:.4f}"),
-        TextColumn(" • acc={task.fields[acc]:.2%}"),
+        TextColumn(" • test_loss={task.fields[loss]:.4f}"),
+        TextColumn(" • test_acc={task.fields[acc]:.2%}"),
         TimeRemainingColumn(),
         transient=True,
     ) as progress:
@@ -89,4 +89,4 @@ def train_model(hidden_layers, lr, epochs, patience=float("inf")):
 
     np.savez(os.path.join(output_dir, "boundary.npz"), grid=grid, y_class=y_class)
 
-    return best_test_loss, best_loss_acc
+    return best_test_loss, best_loss_acc, i

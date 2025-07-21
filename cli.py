@@ -1,3 +1,4 @@
+from collections import namedtuple
 import os
 from pyfiglet import figlet_format
 from rich.console import Console
@@ -14,6 +15,13 @@ from visualization import (
 )
 
 console = Console()
+
+MAX_EPOCHS = 1_000_000
+MAX_PATIENCE = 1_000_000
+
+TrainingConfig = namedtuple(
+    "TrainingConfig", ["hidden_layers", "lr", "epochs", "patience", "dynamic_epochs"]
+)
 
 
 def clear_terminal():
@@ -37,7 +45,7 @@ def prompt_training_config():
     layer_input = questionary.text("Hidden layers:", default="16, 32, 64").ask()
     if layer_input is None:
         console.print("[red]Cancelled. Returning to main menu...[/red]")
-        return None, None, None
+        return None
     hidden_layers = [int(x.strip()) for x in layer_input.split(",")]
 
     # Learning rate
@@ -48,24 +56,52 @@ def prompt_training_config():
     ).ask()
     if lr is None:
         console.print("[red]Cancelled. Returning to main menu...[/red]")
-        return None, None, None
+        return None
     if float(lr) >= 0.01:
         console.print("[yellow]⚠️ Warning: High learning rate may cause instability.[/yellow]")
     lr = float(lr)
 
-    # Epochs
-    epochs = questionary.text(
-        "Number of training epochs:",
-        default="1000",
-        validate=lambda val: val.isdigit() or "Please enter a valid number",
-    ).ask()
-    if epochs is None:
-        console.print("[red]Cancelled. Returning to main menu...[/red]")
-        return None, None, None
-    epochs = int(epochs)
-    # Note: add option for patience
+    dynamic_epochs = questionary.confirm("Use dynamic epoch stop?", default=True).ask()
 
-    return hidden_layers, lr, epochs
+    if dynamic_epochs:
+        # Patience
+        patience = questionary.text(
+            "Patience:",
+            default="100",
+            validate=lambda val: val.isdigit() or "Please enter a valid number",
+        ).ask()
+        if patience is None:
+            console.print("[red]Cancelled. Returning to main menu...[/red]")
+            return None
+        patience = int(patience)
+    else:
+        # Epochs
+        epochs = questionary.text(
+            "Number of training epochs:",
+            default="1000",
+            validate=lambda val: val.isdigit() or "Please enter a valid number",
+        ).ask()
+        if epochs is None:
+            console.print("[red]Cancelled. Returning to main menu...[/red]")
+            return None
+        epochs = int(epochs)
+
+    if dynamic_epochs:
+        return TrainingConfig(
+            hidden_layers=hidden_layers,
+            lr=lr,
+            epochs=MAX_EPOCHS,
+            patience=patience,
+            dynamic_epochs=dynamic_epochs,
+        )
+    else:
+        return TrainingConfig(
+            hidden_layers=hidden_layers,
+            lr=lr,
+            epochs=epochs,
+            patience=MAX_PATIENCE,
+            dynamic_epochs=dynamic_epochs,
+        )
 
 
 def prompt_plotting_config(term_plot, gui_plot):
@@ -108,14 +144,16 @@ def main_menu():
             console.print("[bold yellow]-> Training configuration[/bold yellow]")
 
             config = prompt_training_config()
-            if any(v is None for v in config):
+            if config is None:
                 continue
-            hidden_layers, lr, epochs = config
+            hidden_layers, lr, epochs, patience, dynamic_epochs = config
 
             console.print(f"[white]-> Starting training...[/white]")
-            best_loss, best_loss_acc = train_model(hidden_layers, lr, epochs)
+            best_loss, best_loss_acc, epoch = train_model(hidden_layers, lr, epochs, patience)
 
             console.print("\n[bold green]Training complete![/bold green]")
+            if dynamic_epochs:
+                console.print(f"[bold green]Early stopping at epoch {epoch}")
             console.print(f"[green]Best Loss:[/green] {best_loss:.6f}")
             console.print(f"[green]Accuracy:[/green] {best_loss_acc:.2%}")
         elif choice == "📉 Show loss curves":
