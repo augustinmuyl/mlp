@@ -45,6 +45,12 @@ def show_header():
     console.print(Panel(description, expand=False, border_style="blue"))
 
 
+def clear_and_show_header():
+    clear_terminal()
+    ascii_banner = figlet_format("MLP Trainer", font="ansi_shadow", width=90)
+    console.print(ascii_banner, style="bold #E1C48F")
+
+
 def prompt_training_config():
     # Hidden layer
     layer_input = questionary.text("Hidden layers:", default="16, 32, 64").ask()
@@ -117,11 +123,13 @@ def prompt_plotting_config(term_plot, gui_plot):
         console.print("[red]Cancelled. Returning to main menu...[/red]")
         return None
     elif use_terminal_plot:
+        clear_and_show_header()
         try:
             return term_plot()
         except FileNotFoundError:
             console.print("[red]✘ No data found. Please train a model first.[/red]")
     else:
+        clear_and_show_header()
         try:
             return gui_plot()
         except FileNotFoundError:
@@ -142,7 +150,7 @@ def main_menu():
         ).ask()
 
         if choice == "❌ Exit":
-            os.system("clear")
+            clear_terminal()
             console.print("[bold red]Goodbye![/bold red]")
             break
 
@@ -154,13 +162,15 @@ def main_menu():
                 continue
             hidden_layers, lr, epochs, patience, dynamic_epochs = config
 
-            os.system("clear")
+            clear_and_show_header()
             console.print(f"[white]-> Starting training...[/white]")
             best_loss, best_loss_acc, epoch = train_model(hidden_layers, lr, epochs, patience)
 
             console.print("[bold green]Training complete![/bold green]")
+
             if dynamic_epochs:
                 console.print(f"[bold green]Early stopping at epoch {epoch}")
+
             console.print(f"[green]Best Loss:[/green] {best_loss:.6f}")
             console.print(f"[green]Accuracy:[/green] {best_loss_acc:.2%}")
         elif choice == "📉 Show loss curves":
@@ -172,6 +182,7 @@ def main_menu():
                 plot_last_decision_boundary_terminal, plot_last_decision_boundary
             )
         press_any_key_rich()
+        clear_and_show_header()
 
 
 def main():

@@ -22,7 +22,6 @@ def plot_loss(training_losses, test_losses):
 
 
 def plot_loss_terminal(training_losses, test_losses):
-    os.system("clear")
     plterm.clear_figure()
     plterm.plot_size(70, 20)
 
@@ -55,7 +54,6 @@ def plot_predictions(X, y_pred, is_grid=False):
 
 
 def plot_predictions_terminal(X, y_pred):
-    os.system("clear")
     plterm.clear_figure()
     plterm.plot_size(80, 25)
 
