@@ -39,7 +39,9 @@ You can train a model using your preferred parameters for the following:
 
 - The number of hidden layers and neurons per layer
 - The learning rate
-- The number of epochs
+- Either:
+  - A fixed number of epochs, or
+  - Enable **dynamic epoch stopping** using a "patience" value, which stops training early when the model stops improving 
 
 After training, the CLI will automatically save model and training info to `data/last_run/`
 
@@ -51,14 +53,18 @@ You can then access the following plots:
 
 > Note: all plots have both terminal and GUI versions
 
+## Features
+
+- Train MLPs from scratch using NumPy
+- Interactive CLI to configure training
+- Terminal and GUI plots:
+  - Loss curves
+  - Predictions
+  - Decision boundary
+- Dynamic epoch stopping with configurable patience
+
 ## To-Do
 
-- [x] ~~Loss graph~~
-- [x] ~~Predicted points plot~~
-- [x] ~~Modularity~~
-- [x] ~~Decision Boundary plot~~
-- [x] ~~CLI Tool~~
-- [ ] Add patience/dynamic epoch stop option
 - [ ] Save and load models
 - [ ] Optimize hyper parameters (grid search)
 - [ ] More datasets (e.g. `make_classifications`)
