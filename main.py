@@ -1,18 +1,29 @@
+import ssl
 import numpy as np
-from sklearn.datasets import make_moons
+from sklearn.datasets import make_moons, fetch_openml
 from sklearn.model_selection import train_test_split
 from model import MLP
 from visualization import plot_loss, plot_loss_terminal, plot_predictions, plot_predictions_terminal
+import matplotlib
 
-X, y = make_moons(n_samples=10000, noise=0.2, random_state=None)
-X = np.asarray(X)
-y = np.asarray(y).reshape(-1, 1)
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+ssl._create_default_https_context = ssl._create_unverified_context
+
+# X, y = make_moons(n_samples=10000, noise=0.2, random_state=None)
+mnist = fetch_openml("mnist_784", version=1, as_frame=False)
+X, y = mnist.data, mnist.target.astype(int)
+X = X / 255.0
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 y_train = np.asarray(y_train)
 y_test = np.asarray(y_test)
 
-model = MLP(X.shape[1], [16, 32, 64], 1)
+y_train_oh = np.eye(10)[y_train]
+y_test_oh = np.eye(10)[y_test]
+
+model = MLP(X.shape[1], [512, 128, 32], 10)
 
 epoch = 10000
 best_test_loss = float("inf")
@@ -30,20 +41,20 @@ y_plot_preds = []
 
 for i in range(epoch):
     # training
-
     y_pred = model.forward(X_train)
     y_pred = np.clip(y_pred, 1e-9, 1 - 1e-9)
-    loss = np.mean(-(y_train * np.log(y_pred) + (1 - y_train) * np.log(1 - y_pred)))
+    loss = -np.mean(np.sum(y_train_oh * np.log(y_pred), axis=1))
     training_losses.append(loss)
-    model.backward(y_train, y_pred, 1e-5)
+    model.backward(y_train_oh, y_pred, 1e-5)
 
     # testing
-
     y_pred = model.forward(X_test)
     y_pred = np.clip(y_pred, 1e-9, 1 - 1e-9)
-    loss = np.mean(-(y_test * np.log(y_pred) + (1 - y_test) * np.log(1 - y_pred)))
+    loss = -np.mean(np.sum(y_test_oh * np.log(y_pred), axis=1))
     test_losses.append(loss)
-    acc = np.mean(y_test == np.rint(y_pred))
+
+    y_pred_labels = np.argmax(y_pred, axis=1)
+    acc = np.mean(y_pred_labels == y_test)
 
     if acc >= best_acc:
         best_acc = acc
@@ -69,15 +80,8 @@ print(
 
 # Decision Boundary plot
 
-for i in np.linspace(-2, 3, 1000):
-    for j in np.linspace(-2, 2, 1000):
-        pred = model.forward(np.array([i, j]))
-        plot_preds.append([i, j])
-        y_plot_preds.append(np.rint(pred))
-
 
 # plot_loss(training_losses, test_losses)
 # plot_loss_terminal(training_losses, test_losses)
 # plot_predictions(X_test, y_pred)
-# plot_predictions_terminal(X_test, y_pred)
-plot_predictions_terminal(np.array(plot_preds), np.array(y_plot_preds))
+plot_predictions_terminal(X_test, y_pred)
