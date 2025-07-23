@@ -2,14 +2,12 @@ import ssl
 import numpy as np
 from sklearn.datasets import make_moons, fetch_openml
 from sklearn.model_selection import train_test_split
+from sklearn import metrics
 from model import MLP
 from visualization import plot_loss, plot_loss_terminal, plot_predictions, plot_predictions_terminal
-import matplotlib
-
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-ssl._create_default_https_context = ssl._create_unverified_context
+# ssl._create_default_https_context = ssl._create_unverified_context
 
 # X, y = make_moons(n_samples=10000, noise=0.2, random_state=None)
 mnist = fetch_openml("mnist_784", version=1, as_frame=False)
@@ -73,6 +71,7 @@ for i in range(epoch):
         print(loss)
         print(acc)
 y_pred = model.forward(X_test)
+y_pred_labels = np.argmax(y_pred, axis=1)
 
 print(
     f"Best Loss: {best_test_loss: .6f}\nAccuracy at best Loss: {best_loss_acc: .2%}\nBest Accuracy: {best_acc: .2%}"
@@ -84,4 +83,22 @@ print(
 # plot_loss(training_losses, test_losses)
 # plot_loss_terminal(training_losses, test_losses)
 # plot_predictions(X_test, y_pred)
-plot_predictions_terminal(X_test, y_pred)
+# plot_predictions_terminal(X_test, y_pred)
+
+fig, ax = plt.subplots(figsize=(8, 8), dpi=100)
+
+disp = metrics.ConfusionMatrixDisplay.from_predictions(
+    y_test, y_pred_labels, normalize="true", values_format=".2f", ax=ax
+)
+disp.figure_.suptitle("Confusion Matrix")
+print(f"Confusion matrix:\n{disp.confusion_matrix}")
+
+for im in ax.get_images():
+    im.set_interpolation("none")  # avoid antialiasing gaps
+
+ax.grid(False)
+for spine in ax.spines.values():
+    spine.set_visible(False)
+
+plt.tight_layout()
+plt.show()
