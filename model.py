@@ -1,8 +1,9 @@
 import numpy as np
+import torch.nn as nn
 
 
 class MLP:
-    def __init__(self, input_dim: int, hidden_dims: list, output_dim: int):
+    def __init__(self, input_dim: int, hidden_dims: list, output_dim: int) -> None:
         self.input_dim = input_dim
         self.hidden_dims = hidden_dims
         self.output_dim = output_dim
@@ -26,6 +27,10 @@ class MLP:
     def deriv_sigmoid(self, x):
         return self.sigmoid(x) * (1 - self.sigmoid(x))
 
+    def softmax(self, x):
+        exps = np.exp(x - np.max(x, axis=1, keepdims=True))
+        return exps / np.sum(exps, axis=1, keepdims=True)
+
     def forward(self, X):
         a = X
         self.Z = []
@@ -34,7 +39,7 @@ class MLP:
             z = a @ w + b
             self.Z.append(z)
             if i == len(self.W) - 1:
-                a = self.sigmoid(z)
+                a = self.softmax(z)
             else:
                 a = self.relu(z)
             self.A.append(a)
@@ -77,3 +82,40 @@ class MLP:
         model.W = data["W"]
         model.B = data["B"]
         return model
+
+
+class MLP_torch(nn.Module):
+    def __init__(self, input_dim: int, hidden_dims: list, output_dim: int) -> None:
+        super().__init__()
+        dims = [input_dim] + hidden_dims + [output_dim]
+        """
+        layers = [
+            nn.Sequential(nn.Linear(in_features=dims[i], out_features=dims[i + 1]), nn.ReLU())
+            for i in range(len(dims) - 2)
+            if hidden_dims
+        ]
+        layers.append(
+            nn.Sequential(
+                nn.Linear(in_features=dims[len(dims) - 1], out_features=dims[len(dims)]),
+                nn.Softmax(),
+            )
+        )
+        self.model = nn.ModuleList(layers)
+        """
+
+        self.layers = nn.ModuleList(
+            [
+                nn.Sequential(nn.Linear(in_features=dims[i], out_features=dims[i + 1]), nn.ReLU())
+                if i < len(dims) - 2
+                else nn.Sequential(
+                    nn.Linear(in_features=dims[i], out_features=dims[i + 1]),
+                    nn.Softmax(dim=1),
+                )
+                for i in range(len(dims) - 1)
+            ]
+        )
+
+    def forward(self, X):
+        for layer in self.layers:
+            X = layer(X)
+        return X
