@@ -4,6 +4,21 @@ from sklearn import metrics
 from model import MLP
 import matplotlib.pyplot as plt
 
+FASHION_LABELS = [
+    "T-shirt/top",  # 0
+    "Trouser",  # 1
+    "Pullover",  # 2
+    "Dress",  # 3
+    "Coat",  # 4
+    "Sandal",  # 5
+    "Shirt",  # 6
+    "Sneaker",  # 7
+    "Bag",  # 8
+    "Ankle boot",  # 9
+]
+
+BATCH_SIZE = 128
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train MLP on MNIST or Fashion-MNIST")
@@ -23,7 +38,7 @@ def parse_args():
     parser.add_argument(
         "--lr",
         type=float,
-        default=1e-5,
+        default=2e-4,
         help="Learning rate",
     )
     parser.add_argument(
@@ -36,7 +51,7 @@ def parse_args():
 
 
 def train_multiclass(X_train, X_test, y_train, y_test, y_train_oh, y_test_oh, args):
-    model = MLP(X_train.shape[1], [512, 128, 32], 10)
+    model = MLP(X_train.shape[1], [256, 128], 10)
 
     epochs = args.epochs
     best_test_loss = float("inf")
@@ -49,14 +64,26 @@ def train_multiclass(X_train, X_test, y_train, y_test, y_train_oh, y_test_oh, ar
     training_losses = []
     test_losses = []
 
-    for i in range(epochs):
-        # training
-        y_pred = model.forward(X_train)
-        y_pred = np.clip(y_pred, 1e-9, 1 - 1e-9)
-        loss = -np.mean(np.sum(y_train_oh * np.log(y_pred), axis=1))
-        training_losses.append(loss)
-        model.backward(y_train_oh, y_pred, lr=lr)
+    num_batches = X_train.shape[0] // BATCH_SIZE
 
+    for i in range(epochs):
+        epoch_train_loss = 0
+
+        for j in range(num_batches):
+            start = j * BATCH_SIZE
+            end = start + BATCH_SIZE
+            X_batch = X_train[start:end]
+            y_batch = y_train_oh[start:end]
+
+            # training
+            y_pred = model.forward(X_batch)
+            y_pred = np.clip(y_pred, 1e-9, 1 - 1e-9)
+            loss = -np.mean(np.sum(y_batch * np.log(y_pred), axis=1))
+            model.backward(y_batch, y_pred, lr=lr)
+            epoch_train_loss += loss
+
+        epoch_train_loss /= num_batches
+        training_losses.append(epoch_train_loss)
         # testing
         y_pred = model.forward(X_test)
         y_pred = np.clip(y_pred, 1e-9, 1 - 1e-9)
@@ -96,7 +123,11 @@ def plot_confusion_matrix(y_test, y_pred_labels, dataset):
     fig, ax = plt.subplots(figsize=(8, 8), dpi=100)
 
     disp = metrics.ConfusionMatrixDisplay.from_predictions(
-        y_test, y_pred_labels, normalize="true", values_format=".2f", ax=ax
+        y_test,
+        y_pred_labels,
+        normalize="true",
+        values_format=".2f",
+        ax=ax,
     )
     disp.figure_.suptitle("Confusion Matrix")
     print(f"Confusion matrix:\n{disp.confusion_matrix}")
@@ -148,7 +179,8 @@ def plot_classification_examples(X, y_true, y_pred, y_pred_labels, dataset, corr
     for ax, idx in zip(axes.ravel(), samples):
         ax.imshow(X[idx].reshape(28, 28), cmap="gray")
         ax.set_title(
-            f"T:{y_true[idx]}, P:{y_pred_labels[idx]}\n{confidences[idx] * 100:.1f}%", fontsize=8
+            f"T:{FASHION_LABELS[y_true[idx]]}, P:{FASHION_LABELS[y_pred_labels[idx]]}\n{confidences[idx] * 100:.1f}%",
+            fontsize=8,
         )
         ax.axis("off")
 
