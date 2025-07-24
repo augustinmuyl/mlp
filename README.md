@@ -63,8 +63,76 @@ You can then access the following plots:
   - Decision boundary
 - Dynamic epoch stopping with configurable patience
 
-## To-Do
+## 🛠️ Remaining Tasks (Roadmap)
 
-- [ ] Save and load models
-- [ ] Optimize hyper parameters (grid search)
-- [ ] More datasets (e.g. `make_classifications`)
+### 📦 Multi-Dataset Support
+
+- [ ] Add dataset selector to CLI:
+  - [ ] `make_moons` (2-class)
+  - [ ] `MNIST` (10-class)
+  - [ ] `Fashion-MNIST` (10-class)
+- [ ] Refactor dataset loading + training logic (e.g. separate function per dataset)
+
+---
+
+### 🧪 Fashion-MNIST Evaluation
+
+- [ ] Add Fashion-MNIST dataset (`fetch_openml("Fashion-MNIST", ...)`)
+- [ ] Train NumPy MLP on Fashion-MNIST
+- [ ] Save + display:
+  - [ ] Accuracy
+  - [ ] Loss curves
+  - [ ] Confusion matrix
+
+---
+
+### 🔄 PyTorch Comparison
+
+- [ ] Rename `test.py` → `compare_pytorch.py`
+- [ ] Show NumPy vs PyTorch results (accuracy, loss)
+- [ ] Optional: compare training time
+- [ ] Summarize in a table in the README
+
+---
+
+### 📉 Plot Exporting
+
+- [ ] Save `loss.png` during training
+- [ ] Save `confusion_matrix.png` after evaluation
+- [ ] Store all plots under `media/` or `outputs/`
+
+---
+
+### 💾 Model Saving and Loading
+
+- [ ] Add CLI menu option: save model
+- [ ] Add CLI menu option: load and evaluate model
+- [ ] Hook into `model.save()` and `model.load()`
+
+---
+
+### 🔍 Grid Search (Optional)
+
+- [ ] Create `grid_search.py`
+- [ ] Run combinations of hidden layers and learning rates
+- [ ] Save best config and scores
+- [ ] (Optional) Include results in README
+
+---
+
+### 📄 README Improvements
+
+- [ ] Add **Performance** section with table:
+  - [ ] make_moons, MNIST, Fashion-MNIST
+  - [ ] NumPy vs PyTorch accuracy
+- [ ] Add screenshots or plot images
+- [ ] Document CLI features: dataset selection, saving/loading, plots
+- [ ] Highlight educational vs practical tradeoffs
+
+---
+
+### 🌐 Portfolio Integration
+
+- [ ] Create CLI demo `.gif` (e.g. using `asciinema`)
+- [ ] Add LinkedIn/GitHub description (1–2 line summary)
+- [ ] Add tags and project topics to GitHub
