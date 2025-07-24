@@ -63,26 +63,47 @@ You can then access the following plots:
   - Decision boundary
 - Dynamic epoch stopping with configurable patience
 
+## 📊 Results
+
+### MNIST
+
+- Best Accuracy: 98.01%
+- Confusion Matrix:
+  ![mnist_confusion_matrix](media/mnist_confusion_matrix.png)
+- Loss Curve:
+  ![mnist_loss_curve](media/mnist_loss_curve.png)
+- Correct Examples:
+  ![mnist_correct_examples](media/mnist_correct_examples.png)
+- Incorrect Examples:
+  ![mnist_incorrect_examples](media/mnist_incorrect_examples.png)
+
+### Fashion-MNIST
+
+- Best Accuracy: 87.65%
+- Confusion Matrix:
+  ![fashion_mnist_confusion_matrix](media/fashion_mnist_confusion_matrix.png)
+- Loss Curve:
+  ![fashion_mnist_loss_curve](media/fashion_mnist_loss_curve.png)
+
 ## 🛠️ Remaining Tasks (Roadmap)
 
 ### 📦 Multi-Dataset Support
 
 - [ ] Add dataset selector to CLI:
   - [ ] `make_moons` (2-class)
-  - [ ] `MNIST` (10-class)
-  - [ ] `Fashion-MNIST` (10-class)
-- [ ] Refactor dataset loading + training logic (e.g. separate function per dataset)
+  - [ ] `make_classifications` (2-class)
+- [x] Refactor dataset loading + training logic (e.g. separate function per dataset)
 
 ---
 
 ### 🧪 Fashion-MNIST Evaluation
 
-- [ ] Add Fashion-MNIST dataset (`fetch_openml("Fashion-MNIST", ...)`)
-- [ ] Train NumPy MLP on Fashion-MNIST
-- [ ] Save + display:
-  - [ ] Accuracy
-  - [ ] Loss curves
-  - [ ] Confusion matrix
+- [x] Add Fashion-MNIST dataset (`fetch_openml("Fashion-MNIST", ...)`)
+- [x] Train NumPy MLP on Fashion-MNIST
+- [x] Save + display:
+  - [x] Accuracy
+  - [x] Loss curves
+  - [x] Confusion matrix
 
 ---
 
