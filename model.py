@@ -57,6 +57,13 @@ class MLP:
             if i != 0:
                 delta = np.dot(delta, self.W[i].T) * self.deriv_relu(self.Z[i - 1])
 
+        max_norm = 1.0
+
+        for i in range(len(grad_W)):
+            norm = np.linalg.norm(grad_W[i])
+            if norm > max_norm:
+                grad_W[i] *= max_norm / norm
+
         for i, (w, b) in enumerate(reversed(list(zip(self.W, self.B)))):
             w -= lr * grad_W[i].T
             b -= lr * grad_B[i]
