@@ -1,27 +1,13 @@
-import ssl
 import numpy as np
-from sklearn.datasets import make_moons, fetch_openml
-from sklearn.model_selection import train_test_split
 from sklearn import metrics
+from datasets import load_mnist
 from model import MLP
-from visualization import plot_loss, plot_loss_terminal, plot_predictions, plot_predictions_terminal
 import matplotlib.pyplot as plt
 
-# ssl._create_default_https_context = ssl._create_unverified_context
 
-# X, y = make_moons(n_samples=10000, noise=0.2, random_state=None)
-mnist = fetch_openml("mnist_784", version=1, as_frame=False)
-X, y = mnist.data, mnist.target.astype(int)
-X = X / 255.0
+X_train, X_test, y_train, y_test, y_train_oh, y_test_oh = load_mnist()
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-y_train = np.asarray(y_train)
-y_test = np.asarray(y_test)
-
-y_train_oh = np.eye(10)[y_train]
-y_test_oh = np.eye(10)[y_test]
-
-model = MLP(X.shape[1], [512, 128, 32], 10)
+model = MLP(X_train.shape[1], [512, 128, 32], 10)
 
 epoch = 10000
 best_test_loss = float("inf")
@@ -37,7 +23,7 @@ plot_preds = []
 y_plot_preds = []
 
 
-for i in range(epoch):
+for i in range(10):
     # training
     y_pred = model.forward(X_train)
     y_pred = np.clip(y_pred, 1e-9, 1 - 1e-9)
@@ -101,4 +87,4 @@ for spine in ax.spines.values():
     spine.set_visible(False)
 
 plt.tight_layout()
-plt.show()
+plt.savefig("confusion_matrix.png")

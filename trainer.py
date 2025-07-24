@@ -1,9 +1,7 @@
 import os
 import numpy as np
 from model import MLP
-from sklearn.datasets import make_moons
-from sklearn.model_selection import train_test_split
-from visualization import plot_loss_terminal, plot_predictions, plot_predictions_terminal
+from datasets import load_make_moons
 from rich.progress import (
     Progress,
     BarColumn,
@@ -15,15 +13,9 @@ from rich.progress import (
 
 
 def train_model(hidden_layers, lr, epochs, patience, dynamic_epoch):
-    X, y = make_moons(n_samples=10000, noise=0.2, random_state=None)
-    X = np.asarray(X)
-    y = np.asarray(y).reshape(-1, 1)
+    X_train, X_test, y_train, y_test = load_make_moons()
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-    y_train = np.asarray(y_train)
-    y_test = np.asarray(y_test)
-
-    model = MLP(X.shape[1], hidden_layers, 1)
+    model = MLP(X_train.shape[1], hidden_layers, 1)
 
     best_test_loss = float("inf")
     best_loss_acc = 0

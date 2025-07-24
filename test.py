@@ -1,32 +1,18 @@
 import ssl
 import numpy as np
-from sklearn.datasets import make_moons, fetch_openml
-from sklearn.model_selection import train_test_split
+from sklearn import metrics
 from torch import nn
 import torch
+from datasets import load_mnist
 from model import MLP_torch
 from visualization import plot_loss, plot_loss_terminal, plot_predictions, plot_predictions_terminal
-import matplotlib
+import matplotlib.pyplot as plt
 from torch.optim import Adam
 
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 
-ssl._create_default_https_context = ssl._create_unverified_context
+X_train, X_test, y_train, y_test, y_train_oh, y_test_oh = load_mnist()
 
-# X, y = make_moons(n_samples=10000, noise=0.2, random_state=None)
-mnist = fetch_openml("mnist_784", version=1, as_frame=False)
-X, y = mnist.data, mnist.target.astype(int)
-X = X / 255.0
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-y_train = np.asarray(y_train)
-y_test = np.asarray(y_test)
-
-y_train_oh = np.eye(10)[y_train]
-y_test_oh = np.eye(10)[y_test]
-
-model = MLP_torch(X.shape[1], [], 10)
+model = MLP_torch(X_train.shape[1], [], 10)
 
 epoch = 10000
 best_test_loss = float("inf")
@@ -85,8 +71,28 @@ print(
 
 # Decision Boundary plot
 
+y_pred = model(torch.FloatTensor(X_test))
+y_pred_labels = torch.argmax(y_pred, dim=1)
 
 # plot_loss(training_losses, test_losses)
 # plot_loss_terminal(training_losses, test_losses)
 # plot_predictions(X_test, y_pred)
 # plot_predictions_terminal(X_test, y_pred)
+
+fig, ax = plt.subplots(figsize=(8, 8), dpi=100)
+
+disp = metrics.ConfusionMatrixDisplay.from_predictions(
+    y_test, y_pred_labels, normalize="true", values_format=".2f", ax=ax
+)
+disp.figure_.suptitle("Confusion Matrix")
+print(f"Confusion matrix:\n{disp.confusion_matrix}")
+
+for im in ax.get_images():
+    im.set_interpolation("none")  # avoid antialiasing gaps
+
+ax.grid(False)
+for spine in ax.spines.values():
+    spine.set_visible(False)
+
+plt.tight_layout()
+plt.savefig("torch_confusion_matrix.png")
