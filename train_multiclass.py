@@ -89,7 +89,7 @@ def train_multiclass(X_train, X_test, y_train, y_test, y_train_oh, y_test_oh, ar
         f"Best Loss: {best_test_loss: .6f}\nAccuracy at best Loss: {best_loss_acc: .2%}\nBest Accuracy: {best_acc: .2%}"
     )
 
-    return model, y_test, y_pred_labels, training_losses, test_losses
+    return model, y_test, y_pred, y_pred_labels, training_losses, test_losses
 
 
 def plot_confusion_matrix(y_test, y_pred_labels, dataset):
@@ -124,24 +124,35 @@ def plot_loss_curve(training_losses, test_losses, dataset):
     plt.savefig(f"media/{dataset}_loss_curve.png")
 
 
-def plot_classification_examples(X, y_true, y_pred, dataset, correct=True, n=9):
+def plot_classification_examples(X, y_true, y_pred, y_pred_labels, dataset, correct=True, n=9):
+    confidences = np.max(y_pred, axis=1)
     if correct:
-        indices = np.where(y_pred == y_true)[0]
+        indices = np.where(y_pred_labels == y_true)[0]
         title_prefix = "Correct"
+        sort_order = confidences
     else:
-        indices = np.where(y_pred != y_true)[0]
+        indices = np.where(y_pred_labels != y_true)[0]
         title_prefix = "Incorrect"
+        sort_order = -confidences
 
     if len(indices) == 0:
         print("No matching examples to display.")
         return
 
-    samples = np.random.choice(indices, size=min(n, len(indices)), replace=False)
+    sorted_indices = indices[np.argsort(sort_order[indices])]
+    samples = sorted_indices[: min(n, len(sorted_indices))]
 
-    fig, axes = plt.subplots(3, 3, figsize=(6, 6))
+    grid_size = int(np.ceil(np.sqrt(n)))
+    fig, axes = plt.subplots(grid_size, grid_size, figsize=(6, 6))
+
     for ax, idx in zip(axes.ravel(), samples):
         ax.imshow(X[idx].reshape(28, 28), cmap="gray")
-        ax.set_title(f"T:{y_true[idx]}, P:{y_pred[idx]}")
+        ax.set_title(
+            f"T:{y_true[idx]}, P:{y_pred_labels[idx]}\n{confidences[idx] * 100:.1f}%", fontsize=8
+        )
+        ax.axis("off")
+
+    for ax in axes.ravel()[len(samples) :]:
         ax.axis("off")
 
     plt.suptitle(f"{title_prefix} Predictions — {dataset}", fontsize=14)
@@ -163,12 +174,12 @@ if __name__ == "__main__":
 
     X_train, X_test, y_train, y_test, y_train_oh, y_test_oh = load_data()
 
-    model, y_test, y_pred_labels, training_losses, test_losses = train_multiclass(
+    model, y_test, y_pred, y_pred_labels, training_losses, test_losses = train_multiclass(
         X_train, X_test, y_train, y_test, y_train_oh, y_test_oh, args
     )
 
     plot_confusion_matrix(y_test, y_pred_labels, dataset)
     plot_loss_curve(training_losses, test_losses, dataset)
 
-    plot_classification_examples(X_test, y_test, y_pred_labels, dataset, correct=True)
-    plot_classification_examples(X_test, y_test, y_pred_labels, dataset, correct=False)
+    plot_classification_examples(X_test, y_test, y_pred, y_pred_labels, dataset, correct=True)
+    plot_classification_examples(X_test, y_test, y_pred, y_pred_labels, dataset, correct=False)
