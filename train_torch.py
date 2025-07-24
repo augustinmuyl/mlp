@@ -95,4 +95,4 @@ for spine in ax.spines.values():
     spine.set_visible(False)
 
 plt.tight_layout()
-plt.savefig("torch_confusion_matrix.png")
+plt.savefig("media/torch_confusion_matrix.png")
