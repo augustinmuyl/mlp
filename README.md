@@ -122,9 +122,9 @@ You can then access the following plots:
 
 ### 📉 Plot Exporting
 
-- [ ] Save `loss.png` during training
-- [ ] Save `confusion_matrix.png` after evaluation
-- [ ] Store all plots under `media/` or `outputs/`
+- [x] Save `loss.png` during training
+- [x] Save `confusion_matrix.png` after evaluation
+- [x] Store all plots under `media/` or `outputs/`
 
 ---
 

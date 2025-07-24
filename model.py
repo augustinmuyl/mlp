@@ -39,7 +39,7 @@ class MLP:
             z = a @ w + b
             self.Z.append(z)
             if i == len(self.W) - 1:
-                a = self.softmax(z)
+                a = self.sigmoid(z)
             else:
                 a = self.relu(z)
             self.A.append(a)

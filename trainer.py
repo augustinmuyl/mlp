@@ -11,6 +11,8 @@ from rich.progress import (
     TimeRemainingColumn,
 )
 
+BATCH_SIZE = 128
+
 
 def train_model(hidden_layers, lr, epochs, patience, dynamic_epoch):
     X_train, X_test, y_train, y_test = load_make_moons()
@@ -23,6 +25,8 @@ def train_model(hidden_layers, lr, epochs, patience, dynamic_epoch):
 
     training_losses = []
     test_losses = []
+
+    num_batches = X_train.shape[0] // BATCH_SIZE
 
     if dynamic_epoch:
         progress_columns = [
@@ -56,15 +60,23 @@ def train_model(hidden_layers, lr, epochs, patience, dynamic_epoch):
         )
 
         for i in range(epochs):
-            # Training
-            y_pred_train = model.forward(X_train)
-            y_pred_train = np.clip(y_pred_train, 1e-9, 1 - 1e-9)
-            loss_train = np.mean(
-                -(y_train * np.log(y_pred_train) + (1 - y_train) * np.log(1 - y_pred_train))
-            )
-            training_losses.append(loss_train)
+            epoch_train_loss = 0
 
-            model.backward(y_train, y_pred_train, lr)
+            for j in range(num_batches):
+                start = j * BATCH_SIZE
+                end = start + BATCH_SIZE
+                X_batch = X_train[start:end]
+                y_batch = y_train[start:end]
+
+                # training
+                y_pred = model.forward(X_batch)
+                y_pred = np.clip(y_pred, 1e-9, 1 - 1e-9)
+                loss = -np.mean(np.sum(y_batch * np.log(y_pred), axis=1))
+                model.backward(y_batch, y_pred, lr=lr)
+                epoch_train_loss += loss
+
+            epoch_train_loss /= num_batches
+            training_losses.append(epoch_train_loss)
 
             # Testing
             y_pred_test = model.forward(X_test)
@@ -83,6 +95,8 @@ def train_model(hidden_layers, lr, epochs, patience, dynamic_epoch):
                 count += 1
                 if count == patience:
                     break
+            if acc == 1:
+                break
 
             update_fields = {"loss": loss_test, "acc": acc}
             if dynamic_epoch:

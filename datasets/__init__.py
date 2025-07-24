@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 
 
 def load_make_moons():
-    X, y = make_moons(n_samples=10000, noise=0.2, random_state=None)
+    X, y = make_moons(n_samples=10000, noise=0.1, random_state=None)
     X = np.asarray(X)
     y = np.asarray(y).reshape(-1, 1)
 
