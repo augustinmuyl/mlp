@@ -17,6 +17,8 @@ FASHION_LABELS = [
     "Ankle boot",  # 9
 ]
 
+MNIST_LABELS = [str(i) for i in range(10)]
+
 BATCH_SIZE = 128
 
 
@@ -38,7 +40,7 @@ def parse_args():
     parser.add_argument(
         "--lr",
         type=float,
-        default=2e-4,
+        default=1e-4,
         help="Learning rate",
     )
     parser.add_argument(
@@ -51,7 +53,7 @@ def parse_args():
 
 
 def train_multiclass(X_train, X_test, y_train, y_test, y_train_oh, y_test_oh, args):
-    model = MLP(X_train.shape[1], [256, 128], 10)
+    model = MLP(X_train.shape[1], [256, 128], 10, multiclass=True)
 
     epochs = args.epochs
     best_test_loss = float("inf")
@@ -119,12 +121,13 @@ def train_multiclass(X_train, X_test, y_train, y_test, y_train_oh, y_test_oh, ar
     return model, y_test, y_pred, y_pred_labels, training_losses, test_losses
 
 
-def plot_confusion_matrix(y_test, y_pred_labels, dataset):
+def plot_confusion_matrix(y_test, y_pred_labels, dataset, label_map):
     fig, ax = plt.subplots(figsize=(8, 8), dpi=100)
 
     disp = metrics.ConfusionMatrixDisplay.from_predictions(
         y_test,
         y_pred_labels,
+        display_labels=label_map,
         normalize="true",
         values_format=".2f",
         ax=ax,
@@ -155,7 +158,9 @@ def plot_loss_curve(training_losses, test_losses, dataset):
     plt.savefig(f"media/{dataset}_loss_curve.png")
 
 
-def plot_classification_examples(X, y_true, y_pred, y_pred_labels, dataset, correct=True, n=9):
+def plot_classification_examples(
+    X, y_true, y_pred, y_pred_labels, dataset, label_map, correct=True, n=9
+):
     confidences = np.max(y_pred, axis=1)
     if correct:
         indices = np.where(y_pred_labels == y_true)[0]
@@ -179,7 +184,7 @@ def plot_classification_examples(X, y_true, y_pred, y_pred_labels, dataset, corr
     for ax, idx in zip(axes.ravel(), samples):
         ax.imshow(X[idx].reshape(28, 28), cmap="gray")
         ax.set_title(
-            f"T:{FASHION_LABELS[y_true[idx]]}, P:{FASHION_LABELS[y_pred_labels[idx]]}\n{confidences[idx] * 100:.1f}%",
+            f"T:{label_map[y_true[idx]]}, P:{label_map[y_pred_labels[idx]]}\n{confidences[idx] * 100:.1f}%",
             fontsize=8,
         )
         ax.axis("off")
@@ -197,9 +202,11 @@ if __name__ == "__main__":
 
     if args.dataset == "mnist":
         dataset = "mnist"
+        label_map = MNIST_LABELS
         from datasets import load_mnist as load_data
     elif args.dataset == "fashion-mnist":
         dataset = "fashion_mnist"
+        label_map = FASHION_LABELS
         from datasets import load_fashion_mnist as load_data
     else:
         raise ValueError(f"Unsupported dataset: {args.dataset}")
@@ -210,8 +217,12 @@ if __name__ == "__main__":
         X_train, X_test, y_train, y_test, y_train_oh, y_test_oh, args
     )
 
-    plot_confusion_matrix(y_test, y_pred_labels, dataset)
+    plot_confusion_matrix(y_test, y_pred_labels, dataset, label_map)
     plot_loss_curve(training_losses, test_losses, dataset)
 
-    plot_classification_examples(X_test, y_test, y_pred, y_pred_labels, dataset, correct=True)
-    plot_classification_examples(X_test, y_test, y_pred, y_pred_labels, dataset, correct=False)
+    plot_classification_examples(
+        X_test, y_test, y_pred, y_pred_labels, dataset, label_map, correct=True
+    )
+    plot_classification_examples(
+        X_test, y_test, y_pred, y_pred_labels, dataset, label_map, correct=False
+    )

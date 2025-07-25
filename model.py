@@ -3,10 +3,13 @@ import torch.nn as nn
 
 
 class MLP:
-    def __init__(self, input_dim: int, hidden_dims: list, output_dim: int) -> None:
+    def __init__(
+        self, input_dim: int, hidden_dims: list, output_dim: int, multiclass=False
+    ) -> None:
         self.input_dim = input_dim
         self.hidden_dims = hidden_dims
         self.output_dim = output_dim
+        self.multiclass = multiclass
         self.W = []
         self.B = []
         dims = [input_dim] + hidden_dims + [output_dim]
@@ -39,7 +42,10 @@ class MLP:
             z = a @ w + b
             self.Z.append(z)
             if i == len(self.W) - 1:
-                a = self.sigmoid(z)
+                if self.multiclass:
+                    a = self.softmax(z)
+                else:
+                    a = self.sigmoid(z)
             else:
                 a = self.relu(z)
             self.A.append(a)
@@ -85,6 +91,7 @@ class MLP:
             input_dim=data["input_dim"],
             hidden_dims=data["hidden_dims"],
             output_dim=data["output_dim"],
+            multiclass=False,
         )
         model.W = data["W"]
         model.B = data["B"]
