@@ -19,7 +19,7 @@ FASHION_LABELS = [
 
 MNIST_LABELS = [str(i) for i in range(10)]
 
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 
 
 def parse_args():
@@ -40,7 +40,7 @@ def parse_args():
     parser.add_argument(
         "--lr",
         type=float,
-        default=1e-4,
+        default=5e-4,
         help="Learning rate",
     )
     parser.add_argument(
@@ -53,7 +53,7 @@ def parse_args():
 
 
 def train_multiclass(X_train, X_test, y_train, y_test, y_train_oh, y_test_oh, args):
-    model = MLP(X_train.shape[1], [256, 128], 10, multiclass=True)
+    model = MLP(X_train.shape[1], [256, 128, 64], 10, multiclass=True)
 
     epochs = args.epochs
     best_test_loss = float("inf")
@@ -69,6 +69,10 @@ def train_multiclass(X_train, X_test, y_train, y_test, y_train_oh, y_test_oh, ar
     num_batches = X_train.shape[0] // BATCH_SIZE
 
     for i in range(epochs):
+        indices = np.random.permutation(X_train.shape[0])
+        X_train = X_train[indices]
+        y_train_oh = y_train_oh[indices]
+
         epoch_train_loss = 0
 
         for j in range(num_batches):
@@ -147,6 +151,7 @@ def plot_confusion_matrix(y_test, y_pred_labels, dataset, label_map):
 
 
 def plot_loss_curve(training_losses, test_losses, dataset):
+    plt.yscale("log")
     plt.figure(figsize=(8, 4))
     plt.plot(training_losses, label="Training Loss")
     plt.plot(test_losses, label="Test Loss")
