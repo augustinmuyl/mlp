@@ -87,7 +87,7 @@ You can then access the following plots:
 
 ### Fashion-MNIST
 
-- Best Accuracy: **87.65%**
+- Best Accuracy: **88.80%**
 
 - Confusion Matrix:
 
