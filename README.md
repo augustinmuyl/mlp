@@ -67,26 +67,42 @@ You can then access the following plots:
 
 ### MNIST
 
-- Best Accuracy: 98.01%
+- Best Accuracy: **98.01%**
+
 - Confusion Matrix:
+
   ![mnist_confusion_matrix](media/mnist_confusion_matrix.png)
+
 - Loss Curve:
+
   ![mnist_loss_curve](media/mnist_loss_curve.png)
+
 - Correct Examples:
+
   ![mnist_correct_examples](media/mnist_correct_examples.png)
+
 - Incorrect Examples:
+
   ![mnist_incorrect_examples](media/mnist_incorrect_examples.png)
 
 ### Fashion-MNIST
 
-- Best Accuracy: 87.65%
+- Best Accuracy: **87.65%**
+
 - Confusion Matrix:
+
   ![fashion_mnist_confusion_matrix](media/fashion_mnist_confusion_matrix.png)
+
 - Loss Curve:
+
   ![fashion_mnist_loss_curve](media/fashion_mnist_loss_curve.png)
+
 - Correct Examples:
+
   ![fashion_mnist_correct_examples](media/fashion_mnist_correct_examples.png)
+
 - Incorrect Examples:
+
   ![fashion_mnist_incorrect_examples](media/fashion_mnist_incorrect_examples.png)
 
 ## 🛠️ Remaining Tasks (Roadmap)
