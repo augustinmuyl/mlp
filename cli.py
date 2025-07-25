@@ -53,7 +53,7 @@ def clear_and_show_header():
 
 def prompt_training_config():
     # Hidden layer
-    layer_input = questionary.text("Hidden layers:", default="64, 32, 16").ask()
+    layer_input = questionary.text("Hidden layers:", default="32, 16").ask()
     if layer_input is None:
         console.print("[red]Cancelled. Returning to main menu...[/red]")
         return None
@@ -62,13 +62,13 @@ def prompt_training_config():
     # Learning rate
     lr = questionary.text(
         "Learning rate:",
-        default="0.00001",
+        default="0.0001",
         validate=lambda val: val.replace(".", "", 1).isdigit() or "Please enter a valid number",
     ).ask()
     if lr is None:
         console.print("[red]Cancelled. Returning to main menu...[/red]")
         return None
-    if float(lr) >= 0.01:
+    if float(lr) > 0.01:
         console.print("[yellow]⚠️ Warning: High learning rate may cause instability.[/yellow]")
     lr = float(lr)
 
