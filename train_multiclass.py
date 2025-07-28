@@ -4,6 +4,19 @@ from sklearn import metrics
 from model import MLP
 import matplotlib.pyplot as plt
 
+CIFAR_LABELS = [
+    "Airplane",  # 0
+    "Automobile",  # 1
+    "Bird",  # 2
+    "Cat",  # 3
+    "Deer",  # 4
+    "Dog",  # 5
+    "Frog",  # 6
+    "Horse",  # 7
+    "Ship",  # 8
+    "Truck",  # 9
+]
+
 FASHION_LABELS = [
     "T-shirt/top",  # 0
     "Trouser",  # 1
@@ -27,7 +40,7 @@ def parse_args():
     parser.add_argument(
         "--dataset",
         type=str,
-        choices=["mnist", "fashion-mnist"],
+        choices=["mnist", "fashion-mnist", "cifar-10"],
         default="mnist",
         help="Which dataset to train on",
     )
@@ -53,7 +66,8 @@ def parse_args():
 
 
 def train_multiclass(X_train, X_test, y_train, y_test, y_train_oh, y_test_oh, args):
-    model = MLP(X_train.shape[1], [256, 128, 64], 10, multiclass=True)
+    # model = MLP(X_train.shape[1], [256, 128, 64], 10, multiclass=True)
+    model = MLP(X_train.shape[1], [1536, 768, 384, 192], 10, multiclass=True)
 
     epochs = args.epochs
     best_test_loss = float("inf")
@@ -187,7 +201,10 @@ def plot_classification_examples(
     fig, axes = plt.subplots(grid_size, grid_size, figsize=(6, 6))
 
     for ax, idx in zip(axes.ravel(), samples):
-        ax.imshow(X[idx].reshape(28, 28), cmap="gray")
+        if dataset == "cifar_10":
+            ax.imshow(X[idx].reshape(3, 32, 32).transpose(1, 2, 0))
+        else:
+            ax.imshow(X[idx].reshape(28, 28), cmap="gray")
         ax.set_title(
             f"T:{label_map[y_true[idx]]}, P:{label_map[y_pred_labels[idx]]}\n{confidences[idx] * 100:.1f}%",
             fontsize=8,
@@ -213,6 +230,10 @@ if __name__ == "__main__":
         dataset = "fashion_mnist"
         label_map = FASHION_LABELS
         from datasets import load_fashion_mnist as load_data
+    elif args.dataset == "cifar-10":
+        dataset = "cifar_10"
+        label_map = CIFAR_LABELS
+        from datasets import load_cifar_10 as load_data
     else:
         raise ValueError(f"Unsupported dataset: {args.dataset}")
 
