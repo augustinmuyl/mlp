@@ -66,8 +66,10 @@ def parse_args():
 
 
 def train_multiclass(X_train, X_test, y_train, y_test, y_train_oh, y_test_oh, args):
-    # model = MLP(X_train.shape[1], [256, 128, 64], 10, multiclass=True)
-    model = MLP(X_train.shape[1], [1536, 768, 384, 192], 10, multiclass=True)
+    if dataset == "cifar_10":
+        model = MLP(X_train.shape[1], [768, 384, 192], 10, multiclass=True)
+    else:
+        model = MLP(X_train.shape[1], [256, 128, 64], 10, multiclass=True)
 
     epochs = args.epochs
     best_test_loss = float("inf")
