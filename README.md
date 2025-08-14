@@ -105,27 +105,15 @@ You can then access the following plots:
 
   ![fashion_mnist_incorrect_examples](media/fashion_mnist_incorrect_examples.png)
 
+## Mathematical Derivations
+
+### Sigmoid
+
+$$\sigma (z)=\frac{1}{1+e^{-z}}$$
+
+### Binary Cross-Entropy Loss
+
 ## 🛠️ Remaining Tasks (Roadmap)
-
-### 📦 Multi-Dataset Support
-
-- [ ] Add dataset selector to CLI:
-  - [ ] `make_moons` (2-class)
-  - [ ] `make_classifications` (2-class)
-- [x] Refactor dataset loading + training logic (e.g. separate function per dataset)
-
----
-
-### 🧪 Fashion-MNIST Evaluation
-
-- [x] Add Fashion-MNIST dataset (`fetch_openml("Fashion-MNIST", ...)`)
-- [x] Train NumPy MLP on Fashion-MNIST
-- [x] Save + display:
-  - [x] Accuracy
-  - [x] Loss curves
-  - [x] Confusion matrix
-
----
 
 ### 🔄 PyTorch Comparison
 
@@ -133,22 +121,6 @@ You can then access the following plots:
 - [ ] Show NumPy vs PyTorch results (accuracy, loss)
 - [ ] Optional: compare training time
 - [ ] Summarize in a table in the README
-
----
-
-### 📉 Plot Exporting
-
-- [x] Save `loss.png` during training
-- [x] Save `confusion_matrix.png` after evaluation
-- [x] Store all plots under `media/` or `outputs/`
-
----
-
-### 💾 Model Saving and Loading
-
-- [ ] Add CLI menu option: save model
-- [ ] Add CLI menu option: load and evaluate model
-- [ ] Hook into `model.save()` and `model.load()`
 
 ---
 
