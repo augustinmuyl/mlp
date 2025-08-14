@@ -116,9 +116,8 @@ $$
     &=\frac{1}{1+e^{-z}}\cdot \frac{e^{-z}}{1+e^{-z}} \\
     &=\sigma (z) \cdot \frac{e^{-z}}{1+e^{-z}} \\
     &=\sigma (z) \cdot \frac{1+e^{-z}-1}{1+e^{-z}} \\
-    &=\sigma (z)\,(1-\sigma (z))
+    &\mathbf{=\sigma (z)(1-\sigma (z))}
 \end{align*}
-\fbox{$\frac{\partial \sigma}{\partial z}=\sigma(z)(1-\sigma(z))$}
 $$
 
 ### Binary Cross-Entropy Loss
