@@ -105,11 +105,21 @@ You can then access the following plots:
 
   ![fashion_mnist_incorrect_examples](media/fashion_mnist_incorrect_examples.png)
 
-## Mathematical Derivations
+## Mathematical Derivations of Backpropagation
 
 ### Sigmoid
 
-$$\sigma (z)=\frac{1}{1+e^{-z}}$$
+$$
+\begin{align*}
+    \sigma (z)&=\frac{1}{1+e^{-z}} \\
+    \frac{\partial \sigma}{\partial z}&=\frac{e^{-z}}{(1+e^{-z})^2} \\
+    &=\frac{1}{1+e^{-z}}\cdot \frac{e^{-z}}{1+e^{-z}} \\
+    &=\sigma (z) \cdot \frac{e^{-z}}{1+e^{-z}} \\
+    &=\sigma (z) \cdot \frac{1+e^{-z}-1}{1+e^{-z}} \\
+    &=\sigma (z)\,(1-\sigma (z))
+\end{align*}
+\boxed{\frac{\partial \sigma}{\partial z}=\sigma (z)\,(1-\sigma (z))}
+$$
 
 ### Binary Cross-Entropy Loss
 
