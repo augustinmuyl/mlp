@@ -111,16 +111,26 @@ You can then access the following plots:
 
 $$
 \begin{align*}
-    \sigma (z)&=\frac{1}{1+e^{-z}} \\
+    \sigma (z)&:=\frac{1}{1+e^{-z}} \\
     \frac{\partial \sigma}{\partial z}&=\frac{e^{-z}}{(1+e^{-z})^2} \\
     &=\frac{1}{1+e^{-z}}\cdot \frac{e^{-z}}{1+e^{-z}} \\
     &=\sigma (z) \cdot \frac{e^{-z}}{1+e^{-z}} \\
     &=\sigma (z) \cdot \frac{1+e^{-z}-1}{1+e^{-z}} \\
-    &\mathbf{=\sigma (z)(1-\sigma (z))}
+    &=\sigma (z)(1-\sigma (z))
 \end{align*}
 $$
 
-### Binary Cross-Entropy Loss
+### Binary Cross-Entropy
+
+$$
+\begin{align*}
+    L&:=-(y\log(\hat{y})+(1-y)\log(1-\hat{y})) \\
+    \frac{\partial L}{\partial \hat{y}}&=-\left(\frac{y}{\hat{y}}-\frac{1-y}{1-\hat{y}}\right) \\
+    &=\frac{1-y}{1-\hat{y}}-\frac{y}{\hat{y}} \\
+    &=\frac{\hat{y}(1-y)-y(1-\hat{y})}{\hat{y}(1-\hat{y})} \\
+    &=\frac{\hat{y}-y}{\hat{y}(1-\hat{y})}
+\end{align*}
+$$
 
 ## 🛠️ Remaining Tasks (Roadmap)
 
