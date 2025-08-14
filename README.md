@@ -124,7 +124,7 @@ $$
 
 $$
 \begin{align*}
-    L&:=-(y\log(\hat{y})+(1-y)\log(1-\hat{y})) \\
+    L&:=-\big(y\cdot \log(\hat{y})+(1-y)\cdot \log(1-\hat{y})\big) \\
     \frac{\partial L}{\partial \hat{y}}&=-\left(\frac{y}{\hat{y}}-\frac{1-y}{1-\hat{y}}\right) \\
     &=\frac{1-y}{1-\hat{y}}-\frac{y}{\hat{y}} \\
     &=\frac{\hat{y}(1-y)-y(1-\hat{y})}{\hat{y}(1-\hat{y})} \\
